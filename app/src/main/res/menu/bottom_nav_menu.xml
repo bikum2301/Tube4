@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_home_24"
+    android:title="Trang chủ" />
+
+    <item
+        android:id="@+id/nav_music"
+        android:icon="@drawable/ic_music_note_24"
+        android:title="Nhạc" />
+
+    <item
+        android:id="@+id/nav_video"
+        android:icon="@drawable/ic_video_library_24"
+    android:title="Video" />
+
+    <item
+        android:id="@+id/nav_library"
+        android:icon="@drawable/ic_library_music_24"
+    android:title="Thư viện" />
+
+</menu>

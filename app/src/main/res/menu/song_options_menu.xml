@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_play_next"
+        android:title="Phát tiếp theo" />
+    <item
+        android:id="@+id/action_add_to_queue"
+        android:title="Thêm vào hàng đợi" />
+    <item
+        android:id="@+id/action_add_to_playlist"
+        android:title="Thêm vào playlist..." />
+    <item
+        android:id="@+id/action_song_details"
+        android:title="Chi tiết" />
+    <!-- Thêm các mục khác: Xóa, Chia sẻ... -->
+</menu>

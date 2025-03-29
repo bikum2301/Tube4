@@ -1,0 +1,22 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.NewTube" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+    <!-- Theme chính của ứng dụng -->
+    <style name="Theme.NewTube" parent="Base.Theme.NewTube" />
+
+    <!-- Theme CHO Splash Screen -->
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <!-- Màu nền cho splash screen -->
+        <item name="windowSplashScreenBackground">@android:color/white</item> <!-- Hoặc màu bạn muốn -->
+
+        <!-- Icon hiển thị trên splash screen (SỬ DỤNG ICON XML MỚI) -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_music_note</item> <!-- *** THAY ĐỔI Ở ĐÂY *** -->
+
+        <!-- Theme sẽ được áp dụng SAU KHI splash screen kết thúc -->
+        <item name="postSplashScreenTheme">@style/Theme.NewTube</item>
+    </style>
+</resources>

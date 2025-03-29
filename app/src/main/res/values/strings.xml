@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">NewTube</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="playlist_thumbnail">Ảnh đại diện playlist</string>
+    <string name="song_thumbnail">Ảnh đại diện bài hát</string>
+    <string name="more_options">Tùy chọn khác</string>
+    <string name="album_art">Ảnh bìa album</string>
+    <string name="artist_icon">Biểu tượng nghệ sĩ</string>
+</resources>

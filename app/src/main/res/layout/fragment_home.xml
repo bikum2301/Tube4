@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".fragment.HomeFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="16dp">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chào mừng trở lại!"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Phần 1: Mới nghe gần đây -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/HomeSectionTitle"
+                android:text="Mới nghe gần đây" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_recently_played"
+                style="@style/HorizontalRecyclerView"
+                tools:listitem="@layout/item_content_horizontal"/>
+            <!-- tools:listitem để xem trước layout item trong preview -->
+
+        </LinearLayout>
+
+        <!-- Phần 2: Đề xuất nhạc -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                style="@style/HomeSectionTitle"
+                android:text="Dành cho bạn (Nhạc)" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_music_recommendations"
+                style="@style/HorizontalRecyclerView"
+                tools:listitem="@layout/item_content_horizontal"/>
+
+        </LinearLayout>
+
+        <!-- Phần 3: Video thịnh hành -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                style="@style/HomeSectionTitle"
+                android:text="Video thịnh hành" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_trending_videos"
+                style="@style/HorizontalRecyclerView"
+                tools:listitem="@layout/item_content_horizontal"/>
+
+        </LinearLayout>
+
+        <!-- Phần 4: Album mới -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                style="@style/HomeSectionTitle"
+                android:text="Album mới" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_new_albums"
+                style="@style/HorizontalRecyclerView"
+                tools:listitem="@layout/item_content_horizontal"/>
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

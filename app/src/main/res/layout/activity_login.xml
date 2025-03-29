@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    tools:context=".activity.LoginActivity">
+
+    <TextView
+        android:id="@+id/tvLoginTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Đăng Nhập NewTube"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="50dp"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilEmail"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@id/tvLoginTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:hint="Email">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilPassword"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/tilEmail"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:passwordToggleEnabled="true"
+    android:hint="Mật khẩu">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/etPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"/>
+
+</com.google.android.material.textfield.TextInputLayout>
+
+
+<com.google.android.material.button.MaterialButton
+android:id="@+id/btnLogin"
+android:layout_width="0dp"
+android:layout_height="wrap_content"
+android:text="Đăng Nhập"
+app:layout_constraintTop_toBottomOf="@id/tilPassword"
+app:layout_constraintStart_toStartOf="parent"
+app:layout_constraintEnd_toEndOf="parent"
+android:layout_marginTop="24dp"
+android:paddingTop="12dp"
+android:paddingBottom="12dp"/>
+
+
+<TextView
+android:id="@+id/tvForgotPassword"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="Quên mật khẩu?"
+android:textColor="?attr/colorPrimary"
+    android:layout_marginTop="16dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:layout_constraintTop_toBottomOf="@id/btnLogin"
+    app:layout_constraintEnd_toEndOf="parent" />
+
+<TextView
+android:id="@+id/tvRegister"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="Chưa có tài khoản? Đăng ký"
+android:textColor="?attr/colorPrimary"
+android:layout_marginTop="16dp"
+android:clickable="true"
+android:focusable="true"
+app:layout_constraintTop_toBottomOf="@id/tvForgotPassword"
+app:layout_constraintStart_toStartOf="parent"
+app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
