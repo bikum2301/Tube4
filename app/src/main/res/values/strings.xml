@@ -7,4 +7,6 @@
     <string name="more_options">Tùy chọn khác</string>
     <string name="album_art">Ảnh bìa album</string>
     <string name="artist_icon">Biểu tượng nghệ sĩ</string>
+    <string name="video_thumbnail">Ảnh đại diện video</string>
+    <string name="channel_icon">Biểu tượng kênh</string>
 </resources>

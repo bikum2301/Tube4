@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="16dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="?attr/selectableItemBackground">
+
+    <!-- Thumbnail Video -->
+    <ImageView
+        android:id="@+id/iv_video_thumbnail"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:background="@color/placeholder_background_color"
+        app:layout_constraintDimensionRatio="16:9"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:contentDescription="@string/video_thumbnail"
+    tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+    <!-- Thời lượng Video (góc dưới phải thumbnail) -->
+    <TextView
+        android:id="@+id/tv_video_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:paddingStart="6dp"
+        android:paddingEnd="6dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:background="@drawable/duration_background"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/iv_video_thumbnail"
+        app:layout_constraintEnd_toEndOf="@id/iv_video_thumbnail"
+        tools:text="12:34" />
+
+    <!-- Icon kênh/avatar (tùy chọn) -->
+    <ImageView
+        android:id="@+id/iv_channel_icon"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="12dp"
+        android:src="@drawable/ic_person_24"
+        android:background="@drawable/circle_background_placeholder"
+        android:padding="6dp"
+        app:tint="?attr/colorOnSecondaryContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_video_thumbnail"
+        android:contentDescription="@string/channel_icon" />
+
+
+    <!-- Container cho Tiêu đề và Thông tin phụ -->
+    <LinearLayout
+        android:id="@+id/layout_video_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintStart_toEndOf="@id/iv_channel_icon"
+        app:layout_constraintEnd_toStartOf="@id/btn_video_options"
+        app:layout_constraintTop_toTopOf="@id/iv_channel_icon"
+        app:layout_constraintBottom_toBottomOf="@id/iv_channel_icon">
+
+        <!-- Tiêu đề Video -->
+        <TextView
+            android:id="@+id/tv_video_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="?android:attr/textColorPrimary"
+            android:maxLines="2"
+            android:ellipsize="end"
+            tools:text="Đây là Tiêu đề Video Rất Rất Dài và Có Thể Xuống Dòng" />
+
+        <!-- Thông tin phụ (Tên kênh - Lượt xem - Thời gian đăng) -->
+        <!-- MediaStore không có sẵn thông tin này, chúng ta sẽ để trống hoặc dùng tên thư mục -->
+        <TextView
+            android:id="@+id/tv_video_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textSize="12sp"
+            android:textColor="?android:attr/textColorSecondary"
+            android:maxLines="1"
+            android:ellipsize="end"
+            tools:text="Tên Thư Mục" />
+
+    </LinearLayout>
+
+    <!-- Nút More Options -->
+    <ImageButton
+        android:id="@+id/btn_video_options"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/ic_more_vert_24"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/more_options"
+        app:tint="?android:attr/textColorSecondary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_video_thumbnail" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

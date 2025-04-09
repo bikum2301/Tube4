@@ -2,10 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -16,37 +22,38 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NewTube"
         tools:targetApi="31">
-
+        <activity
+            android:name=".activity.VideoPlayer"
+            android:exported="false" />
         <activity
             android:name=".activity.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.App.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.LoginActivity"
             android:exported="false" />
-
         <activity
             android:name=".activity.MainActivity"
-            android:exported="false" />
-
-        <!-- THÊM KHAI BÁO CHO ACTIVITY MỚI -->
+            android:exported="false" /> <!-- THÊM KHAI BÁO CHO ACTIVITY MỚI -->
         <activity
             android:name=".activity.RegisterActivity"
             android:exported="false"
-            android:parentActivityName=".activity.LoginActivity"/> <!-- Tùy chọn: Thêm nút back trên ActionBar -->
-
-
+            android:parentActivityName=".activity.LoginActivity" /> <!-- Tùy chọn: Thêm nút back trên ActionBar -->
         <activity
             android:name=".activity.ForgotPasswordActivity"
             android:exported="false"
-            android:parentActivityName=".activity.LoginActivity"/> <!-- Tùy chọn: Thêm nút back trên ActionBar -->
-
+            android:parentActivityName=".activity.LoginActivity" />
+        <service
+            android:name=".service.MusicPlayerService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback"/>
     </application>
 
 </manifest>
