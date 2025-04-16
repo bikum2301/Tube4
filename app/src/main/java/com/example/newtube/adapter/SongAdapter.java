@@ -62,7 +62,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         requestOptions = requestOptions.transforms(new CenterCrop()); // , new RoundedCorners(4)
 
         Glide.with(context)
-                .load(song.getAlbumArtUri()) // Có thể là URI hoặc URL
+                .load(song.getAlbumArtPath()) // Có thể là URI hoặc URL
                 .apply(requestOptions)
                 .placeholder(R.drawable.ic_music_note_24) // Dùng icon nhạc làm placeholder
                 .error(R.drawable.ic_music_note_24) // Cũng dùng icon nhạc khi lỗi

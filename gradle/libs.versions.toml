@@ -1,5 +1,5 @@
 [versions]
-agp = "8.7.3"
+agp = "8.7.3" # Hoặc phiên bản AGP bạn đang dùng
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -7,6 +7,14 @@ appcompat = "1.7.0"
 material = "1.12.0"
 activity = "1.10.1"
 constraintlayout = "2.2.1"
+# *** THÊM PHIÊN BẢN CHO CÁC THƯ VIỆN MỚI ***
+coreSplashscreen = "1.0.1"
+glide = "4.16.0"
+viewpager2 = "1.1.0" # Có thể dùng 1.1.0-beta02 hoặc mới hơn
+media3 = "1.3.1"     # Phiên bản cho Media3 (ExoPlayer)
+androidxMedia = "1.7.0" # Phiên bản cho androidx.media (MediaStyle)
+fragment = "1.7.1"      # Phiên bản cho Fragment
+
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -16,7 +24,21 @@ appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "a
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+# *** THÊM CÁC THƯ VIỆN MỚI VÀO ĐÂY ***
+core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashscreen"}
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide"}
+viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", version.ref = "viewpager2"}
+# Media3 / ExoPlayer
+media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3"}
+media3-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "media3"}
+media3-exoplayer-dash = { group = "androidx.media3", name = "media3-exoplayer-dash", version.ref = "media3"} # Nếu dùng
+media3-exoplayer-hls = { group = "androidx.media3", name = "media3-exoplayer-hls", version.ref = "media3"}   # Nếu dùng
+# androidx.media (Cho MediaStyle Notification)
+androidx-media = { group = "androidx.media", name = "media", version.ref = "androidxMedia"}
+# Fragment (Khai báo rõ ràng)
+fragment = { group = "androidx.fragment", name = "fragment", version.ref = "fragment" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-
+# android-library = { id = "com.android.library", version.ref = "agp" } # Nếu có module library

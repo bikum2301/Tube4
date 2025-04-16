@@ -3,11 +3,16 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-
+    <!-- Màu ví dụ cho gradient (Nếu bạn dùng) -->
     <color name="gradient_start_color">#FF7F50</color>
     <color name="gradient_end_color">#FF6347</color>
 
-
+    <!-- Màu nền placeholder -->
     <color name="placeholder_background_color">#E0E0E0</color>
+
+    <!-- *** THÊM MÀU NHẤN *** -->
+    <color name="purple_500">#FF6200EE</color> <!-- Màu tím chuẩn Material -->
+    <!-- Hoặc bạn có thể dùng màu khác, ví dụ: -->
+    <!-- <color name="color_accent">#FF03DAC5</color> -->
 
 </resources>

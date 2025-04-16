@@ -4,24 +4,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.VideoFragment">
+    tools:context=".fragment.music.SongsFragment">
+
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_videos"
+        android:id="@+id/rv_songs"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_video"
+        tools:listitem="@layout/item_song"
         android:visibility="gone"/>
 
-
     <ProgressBar
-        android:id="@+id/progress_bar_videos"
+        android:id="@+id/progress_bar_songs"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="visible" />
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_status_songs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="?android:attr/textColorSecondary"
+        android:visibility="gone"
+        tools:text="Không có bài hát nào."/>
 
 </FrameLayout>

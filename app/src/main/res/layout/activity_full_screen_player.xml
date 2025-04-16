@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground"
+    tools:context=".activity.FullScreenPlayerActivity">
+
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar_player"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorSurface"
+        app:navigationIcon="@drawable/ic_arrow_back_24"
+        app:titleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:title="Đang phát"/>
+
+
+
+    <ImageView
+        android:id="@+id/iv_player_album_art"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_album_24"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_player"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tv_player_title"
+        app:layout_constraintVertical_chainStyle="packed"
+        android:contentDescription="@string/album_art" />
+
+    <!-- Tên bài hát -->
+    <TextView
+        android:id="@+id/tv_player_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="8dp"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="center"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_player_album_art"
+        app:layout_constraintBottom_toTopOf="@id/tv_player_artist"
+        tools:text="Tên Bài Hát Rất Rất Dài Để Test Marquee" />
+
+
+    <!-- Tên nghệ sĩ -->
+    <TextView
+        android:id="@+id/tv_player_artist"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:gravity="center"
+        android:textColor="?android:attr/textColorSecondary"
+        android:textSize="16sp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_player_title"
+        app:layout_constraintBottom_toTopOf="@id/seekbar_player"
+        tools:text="Tên Nghệ Sĩ" />
+
+    <!-- Thanh Seekbar -->
+    <SeekBar
+        android:id="@+id/seekbar_player"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tv_player_current_time" />
+    <!-- Style cho seekbar có thể tùy chỉnh thêm -->
+
+    <!-- Thời gian hiện tại -->
+    <TextView
+        android:id="@+id/tv_player_current_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="?android:attr/textColorSecondary"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@id/seekbar_player"
+        app:layout_constraintBottom_toTopOf="@id/layout_controls"
+        android:layout_marginBottom="24dp"
+        tools:text="01:23" />
+
+    <!-- Tổng thời gian -->
+    <TextView
+        android:id="@+id/tv_player_total_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="?android:attr/textColorSecondary"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@id/seekbar_player"
+        app:layout_constraintTop_toTopOf="@id/tv_player_current_time"
+        app:layout_constraintBottom_toBottomOf="@id/tv_player_current_time"
+        tools:text="04:56" />
+
+
+    <!-- Layout chứa các nút điều khiển chính -->
+    <LinearLayout
+        android:id="@+id/layout_controls"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/layout_extra_controls">
+
+        <ImageButton
+            android:id="@+id/btn_player_previous"
+            style="@style/PlayerControlButton"
+            android:src="@drawable/ic_skip_previous_24"
+            android:contentDescription="Previous"/>
+
+        <ImageButton
+            android:id="@+id/btn_player_play_pause"
+            style="@style/PlayerControlButton.Large"
+            android:src="@drawable/ic_play_arrow_24"
+            android:contentDescription="Play/Pause"/>
+
+        <ImageButton
+            android:id="@+id/btn_player_next"
+            style="@style/PlayerControlButton"
+            android:src="@drawable/ic_skip_next_24"
+            android:contentDescription="Next"/>
+
+    </LinearLayout>
+
+    <!-- Layout chứa các nút phụ (Shuffle, Repeat) -->
+    <LinearLayout
+        android:id="@+id/layout_extra_controls"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="32dp"
+        android:paddingEnd="32dp"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageButton
+            android:id="@+id/btn_player_shuffle"
+            style="@style/PlayerControlButton.Small"
+            android:src="@drawable/ic_shuffle_24"
+            app:tint="?android:attr/textColorSecondary"
+            android:contentDescription="Shuffle"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"/> <!-- Spacer -->
+
+        <ImageButton
+            android:id="@+id/btn_player_repeat"
+            style="@style/PlayerControlButton.Small"
+            android:src="@drawable/ic_repeat_24"
+            app:tint="?android:attr/textColorSecondary"
+            android:contentDescription="Repeat"/>
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

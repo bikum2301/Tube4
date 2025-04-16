@@ -2,78 +2,84 @@ package com.example.newtube.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.google.gson.annotations.SerializedName; // Import cho Gson
 
-public class Song implements Parcelable { // Implement Parcelable
-    private long id;
+public class Song implements Parcelable {
+
+    @SerializedName("_id") // Khớp với MongoDB _id
+    private String id;     // Đổi thành String
+
+    @SerializedName("title")
     private String title;
-    private String artist;
-    private String album;
-    private long duration;
-    private String dataPath;
-    private String albumArtUri;
 
-    // Constructor
-    public Song(long id, String title, String artist, String album, long duration, String dataPath, String albumArtUri) {
+    @SerializedName("artist")
+    private String artist;
+
+    @SerializedName("album")
+    private String album;
+
+    @SerializedName("duration") // Giả sử API trả về milliseconds
+    private long duration;
+
+    @SerializedName("filePath") // Khớp với API
+    private String filePath;    // Đổi tên từ dataPath
+
+    @SerializedName("albumArtPath") // Khớp với API
+    private String albumArtPath;   // Đổi tên từ albumArtUri
+
+    // Constructor cập nhật cho API
+    public Song(String id, String title, String artist, String album, long duration, String filePath, String albumArtPath) {
         this.id = id;
         this.title = title;
         this.artist = artist;
         this.album = album;
         this.duration = duration;
-        this.dataPath = dataPath;
-        this.albumArtUri = albumArtUri;
+        this.filePath = filePath;
+        this.albumArtPath = albumArtPath;
     }
 
-    // --- Parcelable Implementation ---
-
+    // --- Parcelable Implementation (Cập nhật theo trường mới) ---
     protected Song(Parcel in) {
-        id = in.readLong();
+        id = in.readString(); // Đọc String id
         title = in.readString();
         artist = in.readString();
         album = in.readString();
         duration = in.readLong();
-        dataPath = in.readString();
-        albumArtUri = in.readString();
-    }
-
-    public static final Creator<Song> CREATOR = new Creator<Song>() {
-        @Override
-        public Song createFromParcel(Parcel in) {
-            return new Song(in);
-        }
-
-        @Override
-        public Song[] newArray(int size) {
-            return new Song[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
+        filePath = in.readString(); // Đọc filePath
+        albumArtPath = in.readString(); // Đọc albumArtPath
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(id);
+        dest.writeString(id); // Ghi String id
         dest.writeString(title);
         dest.writeString(artist);
         dest.writeString(album);
         dest.writeLong(duration);
-        dest.writeString(dataPath);
-        dest.writeString(albumArtUri);
+        dest.writeString(filePath); // Ghi filePath
+        dest.writeString(albumArtPath); // Ghi albumArtPath
     }
 
-    // --- Getters ---
-    public long getId() { return id; }
+    public static final Creator<Song> CREATOR = new Creator<Song>() {
+        @Override public Song createFromParcel(Parcel in) { return new Song(in); }
+        @Override public Song[] newArray(int size) { return new Song[size]; }
+    };
+
+    @Override public int describeContents() { return 0; }
+    // --- Kết thúc Parcelable ---
+
+    // --- Getters (Cập nhật) ---
+    public String getId() { return id; } // Trả về String
     public String getTitle() { return title; }
     public String getArtist() { return artist; }
     public String getAlbum() { return album; }
     public long getDuration() { return duration; }
-    public String getDataPath() { return dataPath; }
-    public String getAlbumArtUri() { return albumArtUri; }
+    public String getFilePath() { return filePath; }
+    public String getAlbumArtPath() { return albumArtPath; }
 
-    // Hàm tiện ích để lấy thời lượng dạng MM:SS
+    // Hàm format thời gian (giữ nguyên)
     public String getFormattedDuration() {
+        if (duration <= 0) return "00:00"; // Xử lý trường hợp duration không hợp lệ
         long totalSeconds = duration / 1000;
         long minutes = totalSeconds / 60;
         long seconds = totalSeconds % 60;

@@ -1,55 +1,46 @@
 package com.example.newtube.fragment;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newtube.R;
-import com.example.newtube.activity.VideoPlayer; // *** THÊM IMPORT NÀY ***
+import com.example.newtube.activity.VideoPlayer;
 import com.example.newtube.adapter.VideoAdapter;
+import com.example.newtube.network.RetrofitClient;
+import com.example.newtube.network.ApiService;
 import com.example.newtube.model.Video;
+import com.example.newtube.model.VideoApiResponse; // *** THÊM IMPORT WRAPPER ***
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class VideoFragment extends Fragment implements VideoAdapter.OnVideoClickListener {
 
-    private static final String TAG = "VideoFragment"; // Tag cho Log
+    private static final String TAG = "VideoFragment";
 
     private RecyclerView rvVideos;
     private VideoAdapter videoAdapter;
     private List<Video> videoList;
-
-    // --- Phần xử lý quyền truy cập video ---
-    private ActivityResultLauncher<String> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    loadVideosFromMediaStore();
-                } else {
-                    Toast.makeText(getContext(), "Cần cấp quyền truy cập video để hiển thị", Toast.LENGTH_LONG).show();
-                }
-            });
+    private ProgressBar progressBar;
+    private ApiService apiService;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,118 +53,94 @@ public class VideoFragment extends Fragment implements VideoAdapter.OnVideoClick
         super.onViewCreated(view, savedInstanceState);
 
         rvVideos = view.findViewById(R.id.rv_videos);
+        progressBar = view.findViewById(R.id.progress_bar_videos);
         videoList = new ArrayList<>();
-        // Khởi tạo listener trước khi gán adapter
-        videoAdapter = new VideoAdapter(getContext(), videoList, this);
-
-        rvVideos.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvVideos.setAdapter(videoAdapter); // Gán adapter ngay cả khi list đang rỗng
-
-        checkAndRequestPermissions();
-    }
-
-    // --- Hàm kiểm tra quyền truy cập video ---
-    private void checkAndRequestPermissions() {
-        String permission;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            permission = Manifest.permission.READ_MEDIA_VIDEO;
+        if (getContext() != null) {
+            videoAdapter = new VideoAdapter(getContext(), videoList, this);
+            rvVideos.setLayoutManager(new LinearLayoutManager(getContext()));
+            rvVideos.setAdapter(videoAdapter);
         } else {
-            permission = Manifest.permission.READ_EXTERNAL_STORAGE;
+            Log.e(TAG, "Context is null during onViewCreated.");
+            return;
         }
 
-        if (ContextCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED) {
-            loadVideosFromMediaStore();
-        } else if (shouldShowRequestPermissionRationale(permission)) {
-            Toast.makeText(getContext(), "Ứng dụng cần quyền truy cập video để hiển thị danh sách.", Toast.LENGTH_LONG).show();
-            requestPermissionLauncher.launch(permission);
-        } else {
-            requestPermissionLauncher.launch(permission);
-        }
+        apiService = RetrofitClient.getApiService();
+        fetchVideosFromApi();
     }
 
-    // Hàm load video từ MediaStore
-    private void loadVideosFromMediaStore() {
-        videoList.clear();
-        Uri videoUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-        String[] projection = {
-                MediaStore.Video.Media._ID,
-                MediaStore.Video.Media.DISPLAY_NAME, // Tên file video (thường dùng làm title)
-                MediaStore.Video.Media.DURATION,
-                MediaStore.Video.Media.DATA, // Đường dẫn file
-                MediaStore.Video.Media.BUCKET_DISPLAY_NAME // Tên thư mục chứa video
-        };
-        // Sắp xếp theo ngày thêm mới nhất
-        String sortOrder = MediaStore.Video.Media.DATE_ADDED + " DESC";
+    private void fetchVideosFromApi() {
+        if (progressBar == null || rvVideos == null || apiService == null) {
+            Log.e(TAG, "UI/API not initialized in fetchVideosFromApi.");
+            return;
+        }
 
-        Cursor cursor = null; // Khởi tạo cursor là null
-        try { // Sử dụng try-catch-finally để đảm bảo cursor luôn đóng
-            cursor = requireContext().getContentResolver().query(videoUri, projection, null, null, sortOrder);
+        progressBar.setVisibility(View.VISIBLE);
+        rvVideos.setVisibility(View.GONE);
 
-            if (cursor != null) {
-                int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID);
-                int titleColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME);
-                int durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
-                int dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
-                int folderColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.BUCKET_DISPLAY_NAME);
-
-                while (cursor.moveToNext()) {
-                    long id = cursor.getLong(idColumn);
-                    String title = cursor.getString(titleColumn);
-                    long duration = cursor.getLong(durationColumn);
-                    String dataPath = cursor.getString(dataColumn);
-                    String folderName = cursor.getString(folderColumn);
-
-                    // Kiểm tra xem file có tồn tại không trước khi thêm vào danh sách
-                    if (dataPath != null) {
-                        File videoFile = new File(dataPath);
-                        if (videoFile.exists()) {
-                            videoList.add(new Video(id, title, duration, dataPath, folderName));
-                            // Bỏ Log ở đây để tránh spam Logcat quá nhiều
-                            // Log.d(TAG, "Loaded video: " + title + " from " + folderName);
-                        } else {
-                            Log.w(TAG, "Video file not found: " + dataPath);
-                        }
-                    }
+        // *** THAY ĐỔI KIỂU CALL ***
+        Call<VideoApiResponse> call = apiService.getVideos();
+        // *** THAY ĐỔI KIỂU CALLBACK ***
+        call.enqueue(new Callback<VideoApiResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<VideoApiResponse> call, @NonNull Response<VideoApiResponse> response) {
+                if (!isAdded() || getContext() == null || progressBar == null || rvVideos == null || videoAdapter == null) {
+                    return;
                 }
-            } else {
-                Log.e(TAG, "Cursor is null, failed to query MediaStore for videos.");
-            }
-        } catch (Exception e) { // Bắt các lỗi khác có thể xảy ra khi query
-            Log.e(TAG, "Error loading videos from MediaStore", e);
-        } finally {
-            if (cursor != null) {
-                cursor.close(); // Đảm bảo cursor được đóng
-            }
-        }
 
+                progressBar.setVisibility(View.GONE);
+                rvVideos.setVisibility(View.VISIBLE);
 
-        videoAdapter.notifyDataSetChanged(); // Cập nhật UI trên main thread
+                if (response.isSuccessful() && response.body() != null) {
+                    // *** LẤY WRAPPER RESPONSE ***
+                    VideoApiResponse apiResponse = response.body();
 
-        if (videoList.isEmpty()) {
-            Log.d(TAG, "No videos found on device or failed to load.");
-            // Chỉ hiện Toast nếu fragment còn được gắn vào context
-            if (isAdded() && getContext() != null) {
-                Toast.makeText(getContext(), "Không tìm thấy video nào trên thiết bị.", Toast.LENGTH_SHORT).show();
+                    // *** KIỂM TRA TRƯỜNG SUCCESS VÀ LẤY DATA TỪ WRAPPER ***
+                    if (apiResponse.isSuccess() && apiResponse.getData() != null) {
+                        videoList.clear();
+                        videoList.addAll(apiResponse.getData()); // Lấy list từ apiResponse.getData()
+                        videoAdapter.notifyDataSetChanged();
+                        Log.d(TAG, "Fetched " + videoList.size() + " videos from API.");
+                        if (videoList.isEmpty()) {
+                            Toast.makeText(getContext(), "Không có video nào.", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        // Xử lý trường hợp success=false hoặc data=null từ API
+                        Log.e(TAG, "API response indicates failure or missing data. Success: " + apiResponse.isSuccess());
+                        Toast.makeText(getContext(), "Lỗi dữ liệu từ server.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Log.e(TAG, "API call failed: " + response.code() + " - " + response.message());
+                    Toast.makeText(getContext(), "Lỗi khi tải video: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
             }
-        } else {
-            Log.d(TAG, "Loaded " + videoList.size() + " videos.");
-        }
+
+            @Override
+            public void onFailure(@NonNull Call<VideoApiResponse> call, @NonNull Throwable t) { // Kiểu Call cũng thay đổi
+                if (!isAdded() || getContext() == null || progressBar == null || rvVideos == null) {
+                    return;
+                }
+                progressBar.setVisibility(View.GONE);
+                rvVideos.setVisibility(View.VISIBLE);
+                Log.e(TAG, "API call error: ", t);
+                Toast.makeText(getContext(), "Lỗi mạng khi tải video.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    // --- Triển khai OnVideoClickListener ---
+    // --- onVideoClick và các hàm khác giữ nguyên ---
     @Override
     public void onVideoClick(Video video) {
-        // ** BẮT ĐẦU THAY ĐỔI **
-        Log.d(TAG, "Attempting to play video: " + video.getTitle() + " URI: " + video.getVideoUri());
-
-        // Tạo Intent để mở VideoPlayerActivity
-        Intent intent = new Intent(getContext(), VideoPlayer.class);
-        // Đặt Uri của video làm dữ liệu cho Intent
-        intent.setData(video.getVideoUri());
-
-        // Khởi chạy Activity
-        startActivity(intent);
-        // ** KẾT THÚC THAY ĐỔI **
+        if (getContext() == null) return;
+        String streamUrl = video.getVideoStreamUrl();
+        if (streamUrl != null) {
+            Log.d(TAG, "Playing video: " + video.getTitle() + " URL: " + streamUrl);
+            Intent intent = new Intent(getContext(), VideoPlayer.class);
+            intent.setData(Uri.parse(streamUrl));
+            startActivity(intent);
+        } else {
+            Toast.makeText(getContext(), "Lỗi: Không thể lấy URL stream", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Stream URL is null for video: " + video.getTitle());
+        }
     }
 
     @Override
@@ -181,40 +148,32 @@ public class VideoFragment extends Fragment implements VideoAdapter.OnVideoClick
         showPopupMenu(anchorView, video);
     }
 
-    // Hàm hiển thị PopupMenu cho video
     private void showPopupMenu(View view, Video video) {
-        // Kiểm tra context trước khi tạo PopupMenu
         if (getContext() == null) return;
-
-        PopupMenu popup = new PopupMenu(requireContext(), view); // Dùng requireContext cho an toàn
+        PopupMenu popup = new PopupMenu(requireContext(), view);
         popup.getMenuInflater().inflate(R.menu.video_options_menu, popup.getMenu());
         popup.setOnMenuItemClickListener(item -> {
-            // Kiểm tra context trước khi thực hiện action
             if (getContext() == null) return false;
-
             int itemId = item.getItemId();
             if (itemId == R.id.action_play_video) {
-                onVideoClick(video); // Gọi lại hàm play video
-                return true;
+                onVideoClick(video); return true;
             } else if (itemId == R.id.action_add_to_playlist) {
-                Toast.makeText(getContext(), "Chức năng: Thêm video vào playlist...", Toast.LENGTH_SHORT).show();
-                return true;
+                Toast.makeText(getContext(), "Chức năng: Thêm video vào playlist...", Toast.LENGTH_SHORT).show(); return true;
             } else if (itemId == R.id.action_share_video) {
-                Toast.makeText(getContext(), "Chức năng: Chia sẻ video...", Toast.LENGTH_SHORT).show();
-                // TODO: Tạo intent share video (ACTION_SEND)
-                Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                shareIntent.setType("video/*"); // Loại MIME cho video
-                shareIntent.putExtra(Intent.EXTRA_STREAM, video.getVideoUri());
-                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Chia sẻ video: " + video.getTitle()); // Tiêu đề email/tin nhắn (tùy chọn)
-                // shareIntent.putExtra(Intent.EXTRA_TEXT, "Xem video này!"); // Nội dung text (tùy chọn)
-                startActivity(Intent.createChooser(shareIntent, "Chia sẻ video qua"));
-                return true;
+                String shareUrl = video.getVideoStreamUrl();
+                if (shareUrl != null) {
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("text/plain");
+                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Chia sẻ video: " + video.getTitle());
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, "Xem video này: " + shareUrl);
+                    startActivity(Intent.createChooser(shareIntent, "Chia sẻ qua"));
+                } else {
+                    Toast.makeText(getContext(), "Không thể chia sẻ video này", Toast.LENGTH_SHORT).show();
+                } return true;
             } else if (itemId == R.id.action_video_details) {
-                Toast.makeText(getContext(), "Chức năng: Chi tiết video...", Toast.LENGTH_SHORT).show();
-                return true;
+                Toast.makeText(getContext(), "Chức năng: Chi tiết video...", Toast.LENGTH_SHORT).show(); return true;
             } else if (itemId == R.id.action_delete_video) {
-                Toast.makeText(getContext(), "Chức năng: Xóa video...", Toast.LENGTH_SHORT).show();
-                return true;
+                Toast.makeText(getContext(), "Chức năng: Xóa video...", Toast.LENGTH_SHORT).show(); return true;
             }
             return false;
         });

@@ -6,19 +6,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
+import android.widget.PopupMenu; // Giữ lại
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.Toast; // Giữ lại
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
+// Bỏ RequestOptions nếu không cần frame cụ thể nữa
+// import com.bumptech.glide.request.RequestOptions;
 import com.example.newtube.R;
-import com.example.newtube.model.Video; // Import model Video
+import com.example.newtube.model.Video;
 
 import java.util.List;
+import java.util.Locale; // Import Locale
 
 public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> {
 
@@ -51,22 +53,24 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
 
         holder.tvTitle.setText(video.getTitle());
         holder.tvDuration.setText(video.getFormattedDuration());
-        holder.tvSubtitle.setText(video.getFolderName()); // Hiển thị tên thư mục làm phụ đề
 
-        // Load thumbnail video bằng Glide
-        // Glide có thể tự động lấy thumbnail từ Uri của video
-        RequestOptions requestOptions = new RequestOptions()
-                .frame(1000000) // Lấy frame ở giây thứ 1 (1,000,000 microseconds) làm thumbnail
-                .centerCrop();
+        // --- CẬP NHẬT PHẦN HIỂN THỊ PHỤ ĐỀ ---
+        // Hiển thị tên người upload và lượt xem (ví dụ)
+        String uploader = video.getUploader(); // Lấy tên người upload (hoặc ID)
+        int views = video.getViews();
+        String subtitleText = (uploader != null ? uploader : "Unknown Uploader") + " • " + formatViews(views) + " lượt xem";
+        holder.tvSubtitle.setText(subtitleText);
 
+        // --- CẬP NHẬT LOAD THUMBNAIL TỪ API ---
+        // Load thumbnail từ thumbnailPath do API cung cấp
         Glide.with(context)
-                .load(video.getVideoUri()) // Load từ Uri của video
-                .apply(requestOptions)
-                .placeholder(R.color.placeholder_background_color)
-                .error(R.drawable.ic_broken_image) // Icon lỗi chung
+                .load(video.getThumbnailPath()) // Sử dụng thumbnailPath
+                .placeholder(R.color.placeholder_background_color) // Màu nền chờ load
+                .error(R.drawable.ic_broken_image) // Icon lỗi
+                .centerCrop() // Hoặc fitCenter() tùy ý
                 .into(holder.ivThumbnail);
 
-        // Set icon kênh mặc định (chưa có dữ liệu thật)
+        // Set icon kênh mặc định (có thể load ảnh người upload sau này)
         holder.ivChannelIcon.setImageResource(R.drawable.ic_person_24);
 
         // Sự kiện click vào cả hàng (để phát video)
@@ -89,11 +93,11 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
         return videoList.size();
     }
 
-    // ViewHolder Class
+    // --- ViewHolder Class (Giữ nguyên) ---
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivThumbnail;
         TextView tvDuration;
-        ImageView ivChannelIcon; // Tạm thời chưa dùng nhiều
+        ImageView ivChannelIcon;
         TextView tvTitle;
         TextView tvSubtitle;
         ImageButton btnOptions;
@@ -106,6 +110,17 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
             tvTitle = itemView.findViewById(R.id.tv_video_title);
             tvSubtitle = itemView.findViewById(R.id.tv_video_subtitle);
             btnOptions = itemView.findViewById(R.id.btn_video_options);
+        }
+    }
+
+    // --- Hàm tiện ích định dạng lượt xem (ví dụ) ---
+    private String formatViews(int views) {
+        if (views < 1000) {
+            return String.valueOf(views);
+        } else if (views < 1000000) {
+            return String.format(Locale.getDefault(), "%.1f N", views / 1000.0); // N = Nghìn
+        } else {
+            return String.format(Locale.getDefault(), "%.1f Tr", views / 1000000.0); // Tr = Triệu
         }
     }
 }
